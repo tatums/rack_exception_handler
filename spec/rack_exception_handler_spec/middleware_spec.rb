@@ -14,12 +14,26 @@ module RackExceptionHandler
       it { is_expected.to eq "Hello World!" }
     end
 
+    context "When a post request is made but params are NOT present" do
+      let(:app) do
+        proc{ [ 200, {} , [ 'no-errors' ] ] }
+      end
+      subject { request.post("/", {"rack.session" => {"rack_exception": true}}).body }
+      it { is_expected.to eq("no-errors") }
+    end
+
     context "When an error is thrown in the host app" do
       let(:app) do
         proc{ [ 200, {} , [ nil.blah ] ] }
       end
+
       it {
-        is_expected.to have_tag("h1") { with_text "ERROR: undefined method `blah' for nil:NilClass" }
+        is_expected.to have_tag('form', :with => { :method => 'post' }) do
+          with_tag "h1", :text => 'Uh oh! Sorry, but something has gone wrong.'
+          with_tag "textarea", :class => 'hidden', name: 'message'
+          with_tag "textarea", :class => 'textarea', name: 'exception'
+          with_tag "input", type: 'button'
+        end
       }
     end
 

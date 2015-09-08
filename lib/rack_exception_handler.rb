@@ -1,4 +1,5 @@
 require "rack"
+require "mail"
 require "rack_exception_handler/version"
 require "rack_exception_handler/middleware"
 
