@@ -64,7 +64,10 @@ module RackExceptionHandler
             float:left;
           }
 
-          body{ padding: 0 2em; }
+          body{
+            font-family: Sans-Serif;
+            padding: 0 2em;
+          }
 
           .textarea {
               display: block;
