@@ -56,7 +56,7 @@ module RackExceptionHandler
     def head
       <<-HEAD
       <head>
-        <title>Rack App</title>
+        <title>Error</title>
         <style type="text/css">
 
           .hidden{
