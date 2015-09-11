@@ -1,7 +1,8 @@
 module RackExceptionHandler
   class Middleware
 
-    ERROR_TEMPLATE = File.expand_path("../error_template.erb", __FILE__)
+    ERROR_TEMPLATE = File.expand_path("../templates/error.erb", __FILE__)
+    EMAIL_TEMPLATE = File.expand_path("../templates/email.erb", __FILE__)
 
     def initialize(app)
       @app = app
@@ -38,15 +39,23 @@ module RackExceptionHandler
                                 password:       RackExceptionHandler.config.password}
       end
 
+      body = email_body(message, exception)
       Mail.new do
         from RackExceptionHandler.config.from
         to  RackExceptionHandler.config.to
         subject RackExceptionHandler.config.subject
-        body "message: #{message}, exception: #{exception}"
+        body body
       end.deliver
     end
 
+    def email_body(message, exception)
+      body_lines = exception.split('\n')
+      erb = ERB.new(File.read(EMAIL_TEMPLATE))
+      erb.result binding
+    end
+
     def error_html(e)
+      body = e.backtrace.join('\n')
       erb = ERB.new(File.read(ERROR_TEMPLATE))
       erb.result binding
     end
