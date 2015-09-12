@@ -14,19 +14,25 @@ module RackExceptionHandler
         exception = request.params["exception"]
 
         if fire_notifications?
+
           request.session["rack_exception"] = nil
 
           RackExceptionHandler.plugins.each do |plugin|
             plugin.call(exception, message: message)
           end
 
-          [200, {"Content-Type" => "text/html"}, [ "Thank you" ] ]
+          [200, {"Content-Type" => "text/html"}, [ Templates::ThankYou.html ] ]
+
         else
           @app.call(env)
         end
       rescue => e
-        request.session["rack_exception"] = true
-        [200, {"Content-Type" => "text/html"}, [ ErrorTemplate.html(e) ] ]
+        if RackExceptionHandler.plugins.any?
+          request.session["rack_exception"] = true
+          [200, {"Content-Type" => "text/html"}, [ Templates::Error.html(e) ] ]
+        else
+          @app.call(env)
+        end
       end
     end
 

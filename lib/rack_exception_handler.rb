@@ -2,7 +2,8 @@ require "rack"
 require "mail"
 require "rack_exception_handler/version"
 require "rack_exception_handler/middleware"
-require "rack_exception_handler/error_template"
+require "rack_exception_handler/templates/error"
+require "rack_exception_handler/templates/thank_you"
 
 ## TODO conditionalize these??
 require "rack_exception_handler/plugins/email"
