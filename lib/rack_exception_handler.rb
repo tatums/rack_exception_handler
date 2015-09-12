@@ -3,6 +3,8 @@ require "mail"
 require "rack_exception_handler/version"
 require "rack_exception_handler/middleware"
 
+require "rack_exception_handler/plugins/email"
+
 module RackExceptionHandler
   class Config
     attr_accessor :address,
@@ -37,6 +39,14 @@ module RackExceptionHandler
 
   def self.configure
     yield(config)
+  end
+end
+
+module RackExceptionHandler
+  def self.plugins
+    [
+      Plugins::Email.plugin
+    ]
   end
 end
 

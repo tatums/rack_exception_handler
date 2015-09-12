@@ -14,6 +14,14 @@ module RackExceptionHandler
       }
     end
 
+
+    describe ".plugins" do
+      subject { RackExceptionHandler.plugins  }
+      it { is_expected.to be_an Array }
+      #it { expect(subject.empty?).to be_falsey }
+      it { expect(subject.first).to be_a Proc  }
+    end
+
     context "when there are no errors" do
       let(:app) do
         proc{ [ 200, {} , [ "Hello World!" ] ] }
