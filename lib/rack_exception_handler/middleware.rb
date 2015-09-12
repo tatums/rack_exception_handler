@@ -32,7 +32,7 @@ module RackExceptionHandler
 
       ## TODO - come up with a better way to pass options
       Mail.defaults do
-        delivery_method :smtp, {address:        RackExceptionHandler.config.address,
+        delivery_method RackExceptionHandler.config.delivery_method, {address:        RackExceptionHandler.config.address,
                                 port:           RackExceptionHandler.config.port,
                                 authentication: RackExceptionHandler.config.authentication,
                                 user_name:      RackExceptionHandler.config.user_name,
