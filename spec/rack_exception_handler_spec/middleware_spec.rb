@@ -7,19 +7,14 @@ module RackExceptionHandler
   describe Middleware do
 
     before do
-      RackExceptionHandler.configure { |c|
+      RackExceptionHandler::Plugins::Email.configure { |c|
         c.delivery_method = :test
         c.from = "noRe@example.com"
         c.to = "blah@exmaple.com"
       }
-    end
-
-
-    describe ".plugins" do
-      subject { RackExceptionHandler.plugins  }
-      it { is_expected.to be_an Array }
-      #it { expect(subject.empty?).to be_falsey }
-      it { expect(subject.first).to be_a Proc  }
+      RackExceptionHandler::Plugins::Slack.configure { |c|
+        c.web_hook = "https://hooks.slack.com/services/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"
+      }
     end
 
     context "when there are no errors" do

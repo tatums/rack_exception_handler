@@ -1,7 +1,7 @@
 module RackExceptionHandler
   class Middleware
 
-    ERROR_TEMPLATE = File.expand_path("../templates/error.erb", __FILE__)
+    attr_reader :request
 
     def initialize(app)
       @app = app
@@ -9,13 +9,12 @@ module RackExceptionHandler
 
     def call(env)
       begin
-        request = Rack::Request.new(env)
+        @request = Rack::Request.new(env)
+        message = request.params["message"]
+        exception = request.params["exception"]
 
-        if request.post? && request.session["rack_exception"] && request.params["exception"] && request.params["message"]
+        if fire_notifications?
           request.session["rack_exception"] = nil
-
-          message = request.params["message"]
-          exception = request.params["exception"]
 
           RackExceptionHandler.plugins.each do |plugin|
             plugin.call(exception, message: message)
@@ -27,17 +26,16 @@ module RackExceptionHandler
         end
       rescue => e
         request.session["rack_exception"] = true
-        [200, {"Content-Type" => "text/html"}, [ error_html(e) ] ]
+        [200, {"Content-Type" => "text/html"}, [ ErrorTemplate.html(e) ] ]
       end
     end
 
     private
 
-    def error_html(e)
-      body = e.backtrace.join('\n')
-      erb = ERB.new(File.read(ERROR_TEMPLATE))
-      erb.result binding
+    def fire_notifications?
+      request.post? && request.session["rack_exception"] && request.params["exception"] && request.params["message"]
     end
+
 
   end
 end

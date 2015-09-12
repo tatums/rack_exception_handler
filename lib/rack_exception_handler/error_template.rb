@@ -1,0 +1,13 @@
+module RackExceptionHandler
+  class ErrorTemplate
+
+    ERROR_TEMPLATE = File.expand_path("../templates/error.erb", __FILE__)
+
+    def self.html(error)
+      body = error.backtrace.join('\n')
+      erb = ERB.new(File.read(ERROR_TEMPLATE))
+      erb.result binding
+    end
+
+  end
+end

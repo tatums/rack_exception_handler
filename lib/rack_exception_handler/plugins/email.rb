@@ -1,45 +1,44 @@
+require_relative "email/email"
+
 module RackExceptionHandler
   module Plugins
-    class Email
 
-      EMAIL_TEMPLATE = File.expand_path("../email.erb", __FILE__)
+    module Email
+      class Config
 
-      def self.configure!
-        Mail.defaults do
-          delivery_method RackExceptionHandler.config.delivery_method, {
-            address:        RackExceptionHandler.config.address,
-            port:           RackExceptionHandler.config.port,
-            authentication: RackExceptionHandler.config.authentication,
-            user_name:      RackExceptionHandler.config.user_name,
-            password:       RackExceptionHandler.config.password,
-            enable_starttls_auto: true
-          }
-        end
-      end
+        attr_accessor :address,
+          :delivery_method,
+          :port,
+          :authentication,
+          :user_name,
+          :password,
+          :from,
+          :to,
+          :subject
 
-      def self.plugin
-        configure!
-        Proc.new do |exception, options={}|
 
-          message = options.fetch(:message, "")
-
-          ## This can be extracted into some sort of exception parser
-          body_lines = exception.split('\n')
-          erb = ERB.new(File.read(EMAIL_TEMPLATE))
-          email_body = erb.result binding
-
-          mail = Mail.new do
-            from RackExceptionHandler.config.from
-            to  RackExceptionHandler.config.to
-            subject RackExceptionHandler.config.subject
-            body email_body
-          end
-
-          mail.deliver!
+        def initialize
+          @delivery_method = :smpt
+          @port = 25
+          @authentication = :login
+          @subject = "An exception has occurred"
         end
 
       end
+    end
 
+    module Email
+      class << self
+        attr_writer :configuration
+      end
+
+      def self.config
+        @config ||= Config.new
+      end
+
+      def self.configure
+        yield(config)
+      end
     end
 
   end
