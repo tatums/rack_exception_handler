@@ -21,6 +21,27 @@ Or install it yourself as:
 
 ## Usage
 
+### Rails
+
+In config/application.rb OR config/environments/*.rb
+
+```ruby
+   RackExceptionHandler.configure do |config|
+
+      config.from = "no-reply@example.com"
+      config.to = "someone.who.cares@example.com"
+      config.subject = "Exception"
+
+      config.delivery_method = :smtp
+      config.authentication = "login"
+      config.user_name = "tatum@example.com"
+      config.password = "tooManySecrets"
+      config.address = "smtp.gmail.com"
+      config.port = 587
+    end
+```
+
+
 TODO: Write usage instructions here
 
 ## Development
