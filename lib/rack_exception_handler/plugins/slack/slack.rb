@@ -9,7 +9,9 @@ module RackExceptionHandler
             Proc.new do |exception, options={}|
               message = options.fetch(:message, "")
             notifier = ::Slack::Notifier.new Plugins::Slack.config.web_hook,
-              username: "RackExceptionHandler", icon_emoji: ":space_invader:"
+              http_client: Plugins::Slack.config.http_client,
+              username: "RackExceptionHandler",
+              icon_emoji: ":space_invader:"
             notifier.ping "message:\n#{message}\n\nexception:\n#{exception}"
             end
           end

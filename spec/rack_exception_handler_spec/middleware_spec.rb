@@ -12,8 +12,10 @@ module RackExceptionHandler
         c.from = "noRe@example.com"
         c.to = "blah@exmaple.com"
       }
+
       RackExceptionHandler::Plugins::Slack.configure { |c|
-        c.web_hook = "https://hooks.slack.com/services/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"
+        c.web_hook = "https://hooks.slack.com/service/sekrets"
+        c.http_client = Plugins::Slack::NoOpClient
       }
     end
 
@@ -68,7 +70,7 @@ module RackExceptionHandler
           params = {exception: "undefined stuff method for nil", message: "blah blah blah"}
           request.post("/", {"rack.session" => session, params: params})
         end
-        it { expect(response.body).to eq("Thank you") }
+        it { expect(response.body).to have_tag("h1", :text => "Thank You") }
 
         it do
           expect(Mail).to receive(:new)
