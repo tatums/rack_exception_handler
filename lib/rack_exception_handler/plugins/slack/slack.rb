@@ -15,7 +15,7 @@ module RackExceptionHandler
                 username: "RackExceptionHandler",
                 icon_emoji: ":space_invader:"
 
-              notifier.ping "user_message:\n#{user_message}\n\n```#{exception.message}```\n```#{exception.backtrace}```"
+              notifier.ping "user_message:\n#{user_message}\n\n```#{exception.message}```\n```#{exception.backtrace.join("\n")}```"
 
             end
           end

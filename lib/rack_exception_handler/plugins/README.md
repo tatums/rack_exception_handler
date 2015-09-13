@@ -2,5 +2,7 @@
 
 Requirements
 
-plugin method that returns a Proc
-call method accepts exception [string], and options [hash]
+a class method `plugin` that returns an object that responds to `call` like as a Proc.
+
+The call method is passed an exception object which can use `#message` and `#backtrace` and options hash.
+

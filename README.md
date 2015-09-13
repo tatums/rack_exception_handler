@@ -1,7 +1,8 @@
 # RackExceptionHandler
 
 Rescue an exception and present the user with a form where they can
-input info then email the results *with a stack trace*
+explain what they were doing when the exception occured. The results 
+are then sent *with a stack trace*
 
 ## Installation
 
@@ -11,23 +12,17 @@ Add this line to your application's Gemfile:
 gem 'rack_exception_handler'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install rack_exception_handler
-
 ## Usage
 
 ### Rails
 
-In config/application.rb OR config/environments/*.rb
+In config/environments/*.rb
+
+Here the email AND the slack plugin are setup
 
 ```ruby
-   RackExceptionHandler.configure do |config|
 
+   RackExceptionHandler::Plugins::Email.configure do |config|
       config.from = "no-reply@example.com"
       config.to = "someone.who.cares@example.com"
       config.subject = "Exception"
@@ -39,10 +34,19 @@ In config/application.rb OR config/environments/*.rb
       config.address = "smtp.gmail.com"
       config.port = 587
     end
+
+    RackExceptionHandler::Plugins::Slack.configure do |config|
+      config.web_hook = "https://hooks.slack.com/services/GODF23/ABSSDFD/1223345"
+    end
+
 ```
 
+### Rack
+## TODO
 
-TODO: Write usage instructions here
+### Plugins
+https://github.com/tatums/rack_exception_handler/tree/master/lib/rack_exception_handler/plugins
+
 
 ## Development
 
