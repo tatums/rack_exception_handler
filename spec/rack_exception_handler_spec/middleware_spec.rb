@@ -67,7 +67,7 @@ module RackExceptionHandler
       context "When sending the form" do
         subject(:response) do
           session =  {"rack_exception" => true}
-          params = {exception: "undefined stuff method for nil", message: "blah blah blah"}
+          params = {exception: "{\"message\":\"undefined method `blah' for nil:NilClass\",\"backtrace\":[\"/Users/tatum/Code/awesome_app/app/controllers/comments_controller.rb:8:in `index'\",\"/Users/tatum/.rbenv/versions/2.2.2/lib/ruby/gems/2.2.0/gems/actionpack-4.2.1/lib/action_controller/metal/implicit_render.rb:4:in `send_action'\"]}", message: "blah blah blah"}
           request.post("/", {"rack.session" => session, params: params})
         end
         it { expect(response.body).to have_tag("h1", :text => "Thank You") }
@@ -75,7 +75,7 @@ module RackExceptionHandler
         it do
           expect(Mail).to receive(:new)
           session =  {"rack_exception" => true}
-          params = {exception: "undefined stuff method for nil", message: "blah blah blah"}
+          params = {exception: "{\"message\":\"undefined method `blah' for nil:NilClass\",\"backtrace\":[\"/Users/tatum/Code/awesome_app/app/controllers/comments_controller.rb:8:in `index'\",\"/Users/tatum/.rbenv/versions/2.2.2/lib/ruby/gems/2.2.0/gems/actionpack-4.2.1/lib/action_controller/metal/implicit_render.rb:4:in `send_action'\"]}", message: "blah blah blah"}
           request.post("/", {"rack.session" => session, params: params})
         end
       end

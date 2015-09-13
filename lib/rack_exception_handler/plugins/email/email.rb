@@ -18,6 +18,7 @@ module RackExceptionHandler
           end
         end
 
+        ## FIXME - This should be private
         def self.valid?
           !Plugins::Email.config.from.nil? &&
             !Plugins::Email.config.to.nil?
@@ -27,10 +28,8 @@ module RackExceptionHandler
           if valid?
             configure!
             Proc.new do |exception, options={}|
-              message = options.fetch(:message, "")
+              user_message = options.fetch(:user_message, "")
 
-              ## This can be extracted into some sort of exception parser
-              body_lines = exception.split('\n')
               erb = ERB.new(File.read(EMAIL_TEMPLATE))
               email_body = erb.result binding
 

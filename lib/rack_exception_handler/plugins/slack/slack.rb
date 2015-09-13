@@ -7,12 +7,16 @@ module RackExceptionHandler
         def self.plugin
           if valid?
             Proc.new do |exception, options={}|
-              message = options.fetch(:message, "")
-            notifier = ::Slack::Notifier.new Plugins::Slack.config.web_hook,
-              http_client: Plugins::Slack.config.http_client,
-              username: "RackExceptionHandler",
-              icon_emoji: ":space_invader:"
-            notifier.ping "message:\n#{message}\n\nexception:\n#{exception}"
+
+              user_message = options.fetch(:user_message, "")
+
+              notifier = ::Slack::Notifier.new Plugins::Slack.config.web_hook,
+                http_client: Plugins::Slack.config.http_client,
+                username: "RackExceptionHandler",
+                icon_emoji: ":space_invader:"
+
+              notifier.ping "user_message:\n#{user_message}\n\n```#{exception.message}```\n```#{exception.backtrace}```"
+
             end
           end
         end

@@ -1,11 +1,12 @@
 
+
+
+
 --------------------------------
-         MESSAGE
+        USER MESSAGE
 --------------------------------
 
-<%= message %>
-
-
+<%= user_message %>
 
 
 
@@ -13,6 +14,9 @@
         EXCEPTION
 --------------------------------
 
-<% body_lines.each do |line| %>
+<% exception.message %>
+
+
+<% exception.backtrace.each do |line| %>
 <%= line %>
 <% end %>

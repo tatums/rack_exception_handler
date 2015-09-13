@@ -9,30 +9,31 @@ module RackExceptionHandler
 
     def call(env)
       begin
+
         @request = Rack::Request.new(env)
-        message = request.params["message"]
-        exception = request.params["exception"]
-
         if fire_notifications?
-
+          ## FIXME - impedience mismatch
+          user_message  = request.params["message"]
+          exception     = JsonParser.from_json_to_exception(request.params["exception"])
           request.session["rack_exception"] = nil
-
           RackExceptionHandler.plugins.each do |plugin|
-            plugin.call(exception, message: message)
+            plugin.call(exception, user_message: user_message)
           end
-
           [200, {"Content-Type" => "text/html"}, [ Templates::ThankYou.html ] ]
-
         else
           @app.call(env)
         end
+
       rescue => e
+
         if RackExceptionHandler.plugins.any?
           request.session["rack_exception"] = true
-          [200, {"Content-Type" => "text/html"}, [ Templates::Error.html(e) ] ]
+          content = JsonParser.as_json(e)
+          [200, {"Content-Type" => "text/html"}, [ Templates::Error.html(content) ] ]
         else
           @app.call(env)
         end
+
       end
     end
 
