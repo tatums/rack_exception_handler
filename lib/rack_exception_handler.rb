@@ -7,16 +7,15 @@ require "rack_exception_handler/templates/error"
 require "rack_exception_handler/templates/thank_you"
 
 ## TODO conditionalize these??
+# Dir.glob("./lib/rack_exception_handler/plugins/*.rb").map {|path| require path }
 require "rack_exception_handler/plugins/email"
 require "rack_exception_handler/plugins/slack"
-require "slack-notifier"
 
 module RackExceptionHandler
   def self.plugins
-    [
-      Plugins::Email::Email.plugin,
-      Plugins::Slack::Slack.plugin
-    ].compact
+    RackExceptionHandler::Plugins.constants.map do |constant|
+      "RackExceptionHandler::Plugins::#{constant}".constantize
+    end
   end
 end
 
